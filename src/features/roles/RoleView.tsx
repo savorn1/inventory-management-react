@@ -97,7 +97,7 @@ export function RoleView() {
           placeholder={t('role.searchPlaceholder')}
         />
         {auth.can('ROLE_CREATE') && (
-          <AppButton onClick={openAdd}>+ {t('role.addTitle')}</AppButton>
+          <AppButton onClick={openAdd}  className='ml-auto'>+ {t('role.addTitle')}</AppButton>
         )}
       </div>
 
