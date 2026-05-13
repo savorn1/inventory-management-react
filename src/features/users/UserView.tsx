@@ -20,19 +20,27 @@ export function UserView() {
   const [editingId, setEditingId]     = useState<number | null>(null)
   const [saving, setSaving]           = useState(false)
   const [loadingUser, setLoadingUser] = useState(false)
+  const [errors, setErrors]           = useState<Record<string, string>>({})
 
   const defaultForm = () => ({ name: '', password: '', status: 'ACTIVE', roleIds: [] as number[] })
   const [form, setForm] = useState(defaultForm())
 
+  function setField(key: string, value: string) {
+    setForm(f => ({ ...f, [key]: value }))
+    if (errors[key]) setErrors(p => ({ ...p, [key]: undefined! }))
+  }
+
   function openAdd() {
     setEditingId(null)
     setForm(defaultForm())
+    setErrors({})
     setShowModal(true)
   }
 
   async function openEdit(id: number) {
     setEditingId(id)
     setForm(defaultForm())
+    setErrors({})
     setLoadingUser(true)
     setShowModal(true)
     try {
@@ -45,6 +53,13 @@ export function UserView() {
   }
 
   async function save() {
+    const e: Record<string, string> = {}
+    if (!form.name.trim()) e.name = t('validation.required')
+    else if (form.name.trim().length < 2) e.name = t('validation.minLength', { min: 2 })
+    if (!editingId && !form.password) e.password = t('validation.passwordRequired')
+    else if (form.password && form.password.length < 6) e.password = t('validation.passwordMin', { min: 6 })
+    if (Object.keys(e).length > 0) { setErrors(e); return }
+
     setSaving(true)
     try {
       if (editingId !== null) {
@@ -162,18 +177,19 @@ export function UserView() {
           <form className="flex flex-col gap-4" onSubmit={e => { e.preventDefault(); save() }}>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-slate-600">{t('user.username')} *</label>
-              <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500"
+              <input value={form.name} onChange={e => setField('name', e.target.value)}
+                className={`px-3 py-2 border rounded-lg text-sm outline-none ${errors.name ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-indigo-500'}`}
                 placeholder={t('user.usernamePlaceholder')} />
+              {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-slate-600">
                 {t('user.password')} {editingId ? t('user.passwordKeep') : '*'}
               </label>
-              <input type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                required={!editingId}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500"
+              <input type="password" value={form.password} onChange={e => setField('password', e.target.value)}
+                className={`px-3 py-2 border rounded-lg text-sm outline-none ${errors.password ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-indigo-500'}`}
                 placeholder={t('user.passwordPlaceholder')} />
+              {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-slate-600">{t('user.status')} *</label>

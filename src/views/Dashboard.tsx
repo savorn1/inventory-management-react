@@ -21,34 +21,43 @@ const stats = [
 
 export function Dashboard() {
   const { t } = useTranslation()
-  const categoryStore = useCategoryStore()
-  const productStore  = useProductStore()
-  const brandStore    = useBrandStore()
-  const supplierStore = useSupplierStore()
-  const clientStore   = useClientStore()
-  const userStore     = useUserStore()
-  const roleStore     = useRoleStore()
+
+  const fetchCategories = useCategoryStore(s => s.fetchAll)
+  const fetchProducts   = useProductStore(s => s.fetchAll)
+  const fetchBrands     = useBrandStore(s => s.fetchAll)
+  const fetchSuppliers  = useSupplierStore(s => s.fetchAll)
+  const fetchClients    = useClientStore(s => s.fetchAll)
+  const fetchUsers      = useUserStore(s => s.fetchAll)
+  const fetchRoles      = useRoleStore(s => s.fetchAll)
+
+  const categoryCount = useCategoryStore(s => s.totalCount)
+  const productCount  = useProductStore(s => s.totalCount)
+  const brandCount    = useBrandStore(s => s.totalCount)
+  const supplierCount = useSupplierStore(s => s.totalCount)
+  const clientCount   = useClientStore(s => s.totalCount)
+  const userCount     = useUserStore(s => s.totalCount)
+  const roleCount     = useRoleStore(s => s.totalCount)
 
   useEffect(() => {
     Promise.all([
-      categoryStore.fetchAll(1, 1),
-      productStore.fetchAll(1, 1),
-      brandStore.fetchAll(1, 1),
-      supplierStore.fetchAll(1, 1),
-      clientStore.fetchAll(1, 1),
-      userStore.fetchAll(1, 1),
-      roleStore.fetchAll(1, 1),
+      fetchCategories(1, 1),
+      fetchProducts(1, 1),
+      fetchBrands(1, 1),
+      fetchSuppliers(1, 1),
+      fetchClients(1, 1),
+      fetchUsers(1, 1),
+      fetchRoles(1, 1),
     ])
-  }, [])
+  }, [fetchCategories, fetchProducts, fetchBrands, fetchSuppliers, fetchClients, fetchUsers, fetchRoles])
 
   const counts: Record<string, number> = {
-    categories: categoryStore.totalCount,
-    products:   productStore.totalCount,
-    brands:     brandStore.totalCount,
-    suppliers:  supplierStore.totalCount,
-    clients:    clientStore.totalCount,
-    users:      userStore.totalCount,
-    roles:      roleStore.totalCount,
+    categories: categoryCount,
+    products:   productCount,
+    brands:     brandCount,
+    suppliers:  supplierCount,
+    clients:    clientCount,
+    users:      userCount,
+    roles:      roleCount,
   }
 
   return (

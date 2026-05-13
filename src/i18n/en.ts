@@ -31,6 +31,17 @@ export default {
     optional: 'Optional',
     none: '— None —',
     select: '— Select —',
+    deleteConfirm: 'Are you sure you want to delete this item?',
+  },
+  validation: {
+    required: 'This field is required.',
+    minLength: 'Must be at least {{min}} characters.',
+    emailInvalid: 'Enter a valid email address.',
+    phoneInvalid: 'Enter a valid phone number.',
+    priceMin: 'Price must be 0 or greater.',
+    codeFormat: 'Code must be uppercase letters, numbers, or underscores.',
+    passwordRequired: 'Password is required.',
+    passwordMin: 'Password must be at least {{min}} characters.',
   },
   auth: {
     signIn: 'Sign in',

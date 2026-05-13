@@ -1,81 +1,90 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRoleStore } from './store'
 import { useAuthStore } from '@/stores/auth'
-import { AppTable, AppPagination, AppModal, AppButton } from '@/components/ui'
-import type { RoleDTO } from '@/api/roles.api'
+import { useConfirmStore } from '@/stores/confirm'
+import { useToast } from '@/hooks/useToast'
+import { AppTable, AppPagination, AppButton } from '@/components/ui'
+import { RoleFormModal } from './RoleFormModal'
+import type { RoleDTO, CreateRoleDTO } from '@/api/roles.api'
 
 export function RoleView() {
   const { t } = useTranslation()
   const store = useRoleStore()
-  const auth  = useAuthStore()
+  const auth = useAuthStore()
+  const toast = useToast()
+  const confirm = useConfirmStore()
 
   useEffect(() => {
     Promise.all([store.fetchAll(1, 10), store.fetchAllPermissions()])
-  }, [])
+  }, [store.fetchAll, store.fetchAllPermissions])
 
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
-  const [saving, setSaving]       = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const defaultForm = () => ({ name: '', code: '', isDefault: false, description: '', permissionIds: [] as number[] })
-  const [form, setForm] = useState(defaultForm())
+  const defaultForm = (): CreateRoleDTO => ({ name: '', code: '', isDefault: false, description: '', permissionIds: [] })
+  const [form, setForm] = useState<CreateRoleDTO>(defaultForm)
+
+  function clearError(key: string) {
+    if (errors[key]) setErrors(p => ({ ...p, [key]: undefined! }))
+  }
 
   function openAdd() {
     setEditingId(null)
     setForm(defaultForm())
+    setErrors({})
     setShowModal(true)
   }
 
   function openEdit(item: RoleDTO) {
     setEditingId(item.id)
-    setForm({ name: item.name, code: item.code, isDefault: item.isDefault, description: item.description ?? '', permissionIds: item.permissions?.map(p => p.id) ?? [] })
+    setForm({
+      name: item.name,
+      code: item.code,
+      isDefault: item.isDefault,
+      description: item.description ?? '',
+      permissionIds: item.permissions?.map(p => p.id) ?? [],
+    })
+    setErrors({})
     setShowModal(true)
   }
 
   async function save() {
+    const e: Record<string, string> = {}
+    if (!form.name.trim()) e.name = t('validation.required')
+    else if (form.name.trim().length < 2) e.name = t('validation.minLength', { min: 2 })
+    if (!form.code.trim()) e.code = t('validation.required')
+    else if (!/^[A-Z0-9_]+$/.test(form.code.trim())) e.code = t('validation.codeFormat')
+    if (Object.keys(e).length > 0) { setErrors(e); return }
+
     setSaving(true)
     try {
       if (editingId !== null) {
-        await store.update(editingId, { ...form })
+        await store.update(editingId, form)
+        toast.add('Role updated successfully.')
       } else {
-        await store.add({ ...form })
+        await store.add(form)
+        toast.add('Role created successfully.')
       }
       setShowModal(false)
+    } catch (err) {
+      toast.add(err instanceof Error ? err.message : 'Failed to save role.', 'error')
     } finally {
       setSaving(false)
     }
   }
 
-  function togglePermission(id: number) {
-    setForm(f => ({
-      ...f,
-      permissionIds: f.permissionIds.includes(id) ? f.permissionIds.filter(p => p !== id) : [...f.permissionIds, id],
-    }))
-  }
-
-  const permissionsByModule = useMemo(() => {
-    const map = new Map<string, typeof store.allPermissions>()
-    for (const p of store.allPermissions) {
-      if (!map.has(p.module)) map.set(p.module, [])
-      map.get(p.module)!.push(p)
-    }
-    return map
-  }, [store.allPermissions])
-
-  function isModuleAllChecked(module: string) {
-    const perms = permissionsByModule.get(module) ?? []
-    return perms.every(p => form.permissionIds.includes(p.id))
-  }
-
-  function toggleModule(module: string) {
-    const perms = permissionsByModule.get(module) ?? []
-    if (isModuleAllChecked(module)) {
-      setForm(f => ({ ...f, permissionIds: f.permissionIds.filter(id => !perms.some(p => p.id === id)) }))
-    } else {
-      const toAdd = perms.map(p => p.id).filter(id => !form.permissionIds.includes(id))
-      setForm(f => ({ ...f, permissionIds: [...f.permissionIds, ...toAdd] }))
-    }
+  function handleDelete(id: number) {
+    confirm.open(t('common.deleteConfirm'), async () => {
+      try {
+        await store.remove(id)
+        toast.add('Role deleted successfully.')
+      } catch (err) {
+        toast.add(err instanceof Error ? err.message : 'Failed to delete role.', 'error')
+      }
+    })
   }
 
   return (
@@ -128,7 +137,7 @@ export function RoleView() {
               <td className="px-4 py-3">
                 <div className="flex gap-2">
                   {auth.can('ROLE_UPDATE') && <AppButton variant="edit" size="sm" onClick={() => openEdit(item)}>{t('common.edit')}</AppButton>}
-                  {auth.can('ROLE_DELETE') && <AppButton variant="delete" size="sm" onClick={() => store.remove(item.id)}>{t('common.delete')}</AppButton>}
+                  {auth.can('ROLE_DELETE') && <AppButton variant="delete" size="sm" onClick={() => handleDelete(item.id)}>{t('common.delete')}</AppButton>}
                 </div>
               </td>
             </tr>
@@ -142,71 +151,18 @@ export function RoleView() {
         onChange={store.goToPage} onSizeChange={store.changeSize}
       />
 
-      <AppModal show={showModal} title={editingId ? t('role.editTitle') : t('role.addTitle')} onClose={() => setShowModal(false)}>
-        <form className="flex flex-col gap-4" onSubmit={e => { e.preventDefault(); save() }}>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-600">{t('role.name')} *</label>
-              <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500"
-                placeholder={t('role.namePlaceholder')} />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-600">{t('role.code')} *</label>
-              <input value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value }))} required
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 font-mono"
-                placeholder={t('role.codePlaceholder')} />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-600">{t('role.description')}</label>
-            <input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-              className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500"
-              placeholder={t('role.descriptionPlaceholder')} />
-          </div>
-          <label className="flex items-center gap-2.5 cursor-pointer select-none">
-            <input type="checkbox" className="w-4 h-4 accent-indigo-600"
-              checked={form.isDefault}
-              onChange={e => setForm(f => ({ ...f, isDefault: e.target.checked }))} />
-            <span className="text-sm text-slate-700">{t('role.isDefault')}</span>
-          </label>
-
-          {/* Permissions */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-slate-600">{t('role.permissions')}</label>
-            <div className="border border-slate-200 rounded-lg overflow-y-auto max-h-64 divide-y divide-slate-100">
-              {Array.from(permissionsByModule.entries()).map(([module, perms]) => (
-                <div key={module} className="p-3">
-                  <label className="flex items-center gap-2 cursor-pointer mb-2">
-                    <input type="checkbox" className="w-4 h-4 accent-indigo-600"
-                      checked={isModuleAllChecked(module)}
-                      onChange={() => toggleModule(module)} />
-                    <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">{module}</span>
-                  </label>
-                  <div className="grid grid-cols-2 gap-1 pl-6">
-                    {perms.map(perm => (
-                      <label key={perm.id} className="flex items-center gap-1.5 cursor-pointer">
-                        <input type="checkbox" className="w-3.5 h-3.5 accent-indigo-600"
-                          checked={form.permissionIds.includes(perm.id)}
-                          onChange={() => togglePermission(perm.id)} />
-                        <span className="text-xs text-slate-600">{perm.action}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-slate-400">{t('role.permissionsSelected', { n: form.permissionIds.length })}</p>
-          </div>
-
-          <div className="flex justify-end gap-2 mt-1">
-            <AppButton variant="cancel" type="button" onClick={() => setShowModal(false)}>{t('common.cancel')}</AppButton>
-            <AppButton variant="primary" type="submit" disabled={saving}>
-              {saving ? t('common.saving') : (editingId ? t('common.update') : t('common.add'))}
-            </AppButton>
-          </div>
-        </form>
-      </AppModal>
+      <RoleFormModal
+        show={showModal}
+        editingId={editingId}
+        saving={saving}
+        form={form}
+        errors={errors}
+        allPermissions={store.allPermissions}
+        onClose={() => setShowModal(false)}
+        onSave={save}
+        onChange={setForm}
+        onClearError={clearError}
+      />
     </div>
   )
 }

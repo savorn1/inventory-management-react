@@ -31,6 +31,17 @@ export default {
     optional: '可选',
     none: '— 无 —',
     select: '— 请选择 —',
+    deleteConfirm: '您确定要删除此项目吗？',
+  },
+  validation: {
+    required: '此字段为必填项。',
+    minLength: '至少需要 {{min}} 个字符。',
+    emailInvalid: '请输入有效的电子邮件地址。',
+    phoneInvalid: '请输入有效的电话号码。',
+    priceMin: '价格必须大于或等于 0。',
+    codeFormat: '代码只能包含大写字母、数字或下划线。',
+    passwordRequired: '密码为必填项。',
+    passwordMin: '密码至少需要 {{min}} 个字符。',
   },
   auth: {
     signIn: '登录',

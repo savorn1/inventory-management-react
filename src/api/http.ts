@@ -2,10 +2,45 @@ function getToken(): string | null {
   return localStorage.getItem('access_token')
 }
 
-async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+// Auth middleware — attaches Bearer token, redirects on 401
+function authMiddleware(headers: Record<string, string>): void {
   const token = getToken()
   if (token) headers['Authorization'] = `Bearer ${token}`
+}
+
+function handleAuthError(): never {
+  localStorage.removeItem('access_token')
+  window.location.href = '/login'
+  throw new Error('Unauthorized')
+}
+
+// Logger middleware — logs request and response timing in dev
+function logRequest(method: string, path: string): number {
+  if (import.meta.env.DEV) {
+    console.log(`→ ${method} /${path}`)
+  }
+  return Date.now()
+}
+
+function logResponse(method: string, path: string, status: number, startedAt: number): void {
+  if (import.meta.env.DEV) {
+    const ms = Date.now() - startedAt
+    const icon = status >= 400 ? '✗' : '←'
+    console.log(`${icon} ${status} ${method} /${path} (${ms}ms)`)
+  }
+}
+
+function logError(method: string, path: string, message: string): void {
+  if (import.meta.env.DEV) {
+    console.error(`✗ ${method} /${path} —`, message)
+  }
+}
+
+async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+
+  authMiddleware(headers)
+  const startedAt = logRequest(method, path)
 
   const res = await fetch(`/${path}`, {
     method,
@@ -13,11 +48,9 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     body: body !== undefined ? JSON.stringify(body) : undefined,
   })
 
-  if (res.status === 401) {
-    localStorage.removeItem('access_token')
-    window.location.href = '/login'
-    throw new Error('Unauthorized')
-  }
+  logResponse(method, path, res.status, startedAt)
+
+  if (res.status === 401) return handleAuthError()
 
   if (!res.ok) {
     let message = `HTTP ${res.status}`
@@ -25,6 +58,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
       const err = await res.json()
       message = err.message || message
     } catch { /* empty */ }
+    logError(method, path, message)
     throw new Error(message)
   }
 

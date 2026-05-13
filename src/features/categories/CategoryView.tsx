@@ -13,7 +13,7 @@ export function CategoryView() {
 
   useEffect(() => { store.fetchAll(1, 10) }, [store.fetchAll])
 
-  const { showModal, form, saving, openAdd, closeModal, setField, save, remove } =
+  const { showModal, form, errors, saving, openAdd, closeModal, setField, save, remove } =
     useCrud<CategoryDTO, { name: string; description: string }>({
       add: store.add,
       update: async () => {},
@@ -21,6 +21,12 @@ export function CategoryView() {
       defaultForm: () => ({ name: '', description: '' }),
       toForm: item => ({ name: item.name, description: item.description }),
       label: 'category',
+      validate: f => {
+        const e: Record<string, string> = {}
+        if (!f.name.trim()) e.name = t('validation.required')
+        else if (f.name.trim().length < 2) e.name = t('validation.minLength', { min: 2 })
+        return e
+      },
     })
 
   return (
@@ -74,9 +80,10 @@ export function CategoryView() {
         <form className="flex flex-col gap-4" onSubmit={e => { e.preventDefault(); save() }}>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-slate-600">{t('category.name')} *</label>
-            <input value={form.name} onChange={e => setField('name', e.target.value)} required
-              className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500"
+            <input value={form.name} onChange={e => setField('name', e.target.value)}
+              className={`px-3 py-2 border rounded-lg text-sm outline-none ${errors.name ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-indigo-500'}`}
               placeholder={t('category.namePlaceholder')} />
+            {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-slate-600">{t('category.description')}</label>

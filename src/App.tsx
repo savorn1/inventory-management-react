@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Header } from '@/components/layout/Header'
 import { AppToast } from '@/components/ui/AppToast'
+import { AppConfirmModal } from '@/components/ui/AppConfirmModal'
 import { useAuthStore } from '@/stores/auth'
 
 export function App() {
@@ -25,6 +26,7 @@ export function App() {
   return (
     <>
       <AppToast />
+      <AppConfirmModal />
       <div className="flex min-h-screen bg-slate-100">
         {/* Mobile backdrop */}
         {sidebarOpen && (
