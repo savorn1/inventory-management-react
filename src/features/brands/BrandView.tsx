@@ -39,7 +39,7 @@ export function BrandView() {
           placeholder={t('brand.searchPlaceholder')}
         />
         {auth.can('BRAND_CREATE') && (
-          <AppButton onClick={openAdd}>+ {t('brand.addTitle')}</AppButton>
+          <AppButton onClick={openAdd} className='ml-auto'>+ {t('brand.addTitle')}</AppButton>
         )}
       </div>
 

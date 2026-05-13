@@ -49,7 +49,7 @@ export function OrderView() {
           placeholder={t('order.searchPlaceholder')}
         />
         {auth.can('ORDER_CREATE') && (
-          <AppButton onClick={() => navigate('/orders/create')}>+ {t('order.addTitle')}</AppButton>
+          <AppButton onClick={() => navigate('/orders/create')} className='ml-auto'>+ {t('order.addTitle')}</AppButton>
         )}
       </div>
 

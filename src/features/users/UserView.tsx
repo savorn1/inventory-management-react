@@ -109,7 +109,7 @@ export function UserView() {
           <option value="INACTIVE">{t('status.inactive')}</option>
         </select>
         {auth.can('USER_CREATE') && (
-          <AppButton onClick={openAdd}>+ {t('user.addTitle')}</AppButton>
+          <AppButton onClick={openAdd} className='ml-auto'>+ {t('user.addTitle')}</AppButton>
         )}
       </div>
 

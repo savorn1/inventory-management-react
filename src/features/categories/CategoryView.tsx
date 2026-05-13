@@ -39,7 +39,7 @@ export function CategoryView() {
           placeholder={t('category.searchPlaceholder')}
         />
         {auth.can('CATEGORY_CREATE') && (
-          <AppButton onClick={openAdd}>+ {t('category.addTitle')}</AppButton>
+          <AppButton onClick={openAdd} className='ml-auto'>+ {t('category.addTitle')}</AppButton>
         )}
       </div>
 

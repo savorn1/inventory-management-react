@@ -42,7 +42,7 @@ export function ClientView() {
           placeholder={t('client.searchPlaceholder')}
         />
         {auth.can('CLIENT_CREATE') && (
-          <AppButton onClick={openAdd}>+ {t('client.addTitle')}</AppButton>
+          <AppButton onClick={openAdd} className='ml-auto'>+ {t('client.addTitle')}</AppButton>
         )}
       </div>
 

@@ -41,7 +41,7 @@ export function SupplierView() {
           placeholder={t('supplier.searchPlaceholder')}
         />
         {auth.can('SUPPLIER_CREATE') && (
-          <AppButton onClick={openAdd}>+ {t('supplier.addTitle')}</AppButton>
+          <AppButton onClick={openAdd} className='ml-auto'>+ {t('supplier.addTitle')}</AppButton>
         )}
       </div>
 
