@@ -65,9 +65,33 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   return res.json()
 }
 
+async function requestFile<T>(method: string, path: string, body: FormData): Promise<T> {
+  const headers: Record<string, string> = {}
+  authMiddleware(headers)
+  const startedAt = logRequest(method, path)
+
+  const res = await fetch(`/${path}`, { method, headers, body })
+  logResponse(method, path, res.status, startedAt)
+
+  if (res.status === 401) return handleAuthError()
+
+  if (!res.ok) {
+    let message = `HTTP ${res.status}`
+    try {
+      const err = await res.json()
+      message = err.message || message
+    } catch { /* empty */ }
+    logError(method, path, message)
+    throw new Error(message)
+  }
+
+  return res.json()
+}
+
 export const http = {
-  get:    <T>(path: string)                 => request<T>('GET',    path),
-  post:   <T>(path: string, body: unknown)  => request<T>('POST',   path, body),
-  put:    <T>(path: string, body: unknown)  => request<T>('PUT',    path, body),
-  delete: <T>(path: string, body?: unknown) => request<T>('DELETE', path, body),
+  get:      <T>(path: string)                       => request<T>('GET',    path),
+  post:     <T>(path: string, body: unknown)        => request<T>('POST',   path, body),
+  put:      <T>(path: string, body: unknown)        => request<T>('PUT',    path, body),
+  delete:   <T>(path: string, body?: unknown)       => request<T>('DELETE', path, body),
+  postFile: <T>(path: string, body: FormData)       => requestFile<T>('POST', path, body),
 }

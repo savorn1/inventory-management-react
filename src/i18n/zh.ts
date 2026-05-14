@@ -84,6 +84,9 @@ export default {
     brand: '品牌',
     price: '价格 ($)',
     pricePlaceholder: '0.00',
+    image: '图片',
+    uploadImage: '点击上传图片',
+    changeImage: '点击更换图片',
   },
   brand: {
     title: '品牌',

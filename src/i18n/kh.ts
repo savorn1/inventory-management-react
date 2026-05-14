@@ -84,6 +84,9 @@ export default {
     brand: 'ម៉ាក',
     price: 'តម្លៃ ($)',
     pricePlaceholder: '0.00',
+    image: 'រូបភាព',
+    uploadImage: 'ចុចដើម្បីបញ្ចូលរូបភាព',
+    changeImage: 'ចុចដើម្បីប្តូររូបភាព',
   },
   brand: {
     title: 'ម៉ាក',

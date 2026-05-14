@@ -84,6 +84,9 @@ export default {
     brand: 'Brand',
     price: 'Price ($)',
     pricePlaceholder: '0.00',
+    image: 'Image',
+    uploadImage: 'Click to upload image',
+    changeImage: 'Click to change image',
   },
   brand: {
     title: 'Brands',
