@@ -47,9 +47,11 @@ export interface CreateOrderDTO {
 }
 
 export const ordersApi = {
-  getAll: (page = 1, size = 10, q = '') => {
+  getAll: (page = 1, size = 10, q = '', statusFilter = '', paymentStatusFilter = '') => {
     const params = new URLSearchParams({ page: String(page), size: String(size) })
     if (q) params.set('q', q)
+    if (statusFilter) params.set('status', statusFilter)
+    if (paymentStatusFilter) params.set('paymentStatus', paymentStatusFilter)
     return http.get<PageResponse<OrderDTO>>(`api/order?${params}`)
   },
 
@@ -61,6 +63,9 @@ export const ordersApi = {
 
   updateStatus: (id: number, status: string) =>
     http.patch<ApiResponse<string>>(`api/order/${id}/status`, { status }),
+
+  updatePaymentStatus: (id: number, paymentStatus: string) =>
+    http.patch<ApiResponse<string>>(`api/order/${id}/payment-status`, { paymentStatus }),
 
   delete: (id: number) =>
     http.delete<ApiResponse<string>>(`api/order/${id}`),

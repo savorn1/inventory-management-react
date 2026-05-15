@@ -9,6 +9,7 @@ import { SupplierView } from '@/features/suppliers/SupplierView'
 import { ClientView } from '@/features/clients/ClientView'
 import { OrderView } from '@/features/orders/OrderView'
 import { CreateOrderView } from '@/features/orders/CreateOrderView'
+import { PaymentView } from '@/features/payments/PaymentView'
 import { UserView } from '@/features/users/UserView'
 import { RoleView } from '@/features/roles/RoleView'
 
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
       { path: 'clients',        element: <ClientView /> },
       { path: 'orders',         element: <OrderView /> },
       { path: 'orders/create',  element: <CreateOrderView /> },
+      { path: 'payments',       element: <PaymentView /> },
       { path: 'users',          element: <UserView /> },
       { path: 'roles',          element: <RoleView /> },
     ],
