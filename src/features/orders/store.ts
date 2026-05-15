@@ -2,48 +2,87 @@ import { create } from 'zustand'
 import { ordersApi } from '@/api/orders.api'
 import type { OrderDTO, CreateOrderDTO } from '@/api/orders.api'
 
-interface OrderStore {
-  items: OrderDTO[]
-  loading: boolean
-  page: number
-  size: number
+interface OrderState {
+  items:      OrderDTO[]
+  loading:    boolean
+  page:       number
+  size:       number
   totalCount: number
   totalPages: number
-  hasNext: boolean
-  hasPrev: boolean
-  search: string
-  fetchAll: (p?: number, s?: number, q?: string) => Promise<void>
-  goToPage: (p: number) => Promise<void>
-  changeSize: (s: number) => Promise<void>
-  searchOrders: (q: string) => Promise<void>
-  add: (payload: CreateOrderDTO) => Promise<void>
-  remove: (id: number) => Promise<void>
+  hasNext:    boolean
+  hasPrev:    boolean
+  search:     string
+}
+
+interface OrderActions {
+  fetchAll:     (page?: number, size?: number, search?: string) => Promise<void>
+  goToPage:     (page: number) => Promise<void>
+  changeSize:   (size: number) => Promise<void>
+  searchOrders: (query: string) => Promise<void>
+  add:          (payload: CreateOrderDTO) => Promise<void>
+  updateStatus: (id: number, status: string) => Promise<void>
+  remove:       (id: number) => Promise<void>
+}
+
+type OrderStore = OrderState & OrderActions
+
+const initialState: OrderState = {
+  items:      [],
+  loading:    false,
+  page:       1,
+  size:       10,
+  totalCount: 0,
+  totalPages: 0,
+  hasNext:    false,
+  hasPrev:    false,
+  search:     '',
 }
 
 export const useOrderStore = create<OrderStore>((set, get) => ({
-  items: [], loading: false, page: 1, size: 10,
-  totalCount: 0, totalPages: 0, hasNext: false, hasPrev: false, search: '',
+  ...initialState,
 
-  async fetchAll(p = get().page, s = get().size, q = get().search) {
-    set({ loading: true, page: p, size: s })
+  async fetchAll(page = get().page, size = get().size, search = get().search) {
+    set({ loading: true, page, size })
     try {
-      const res = await ordersApi.getAll(p, s, q)
-      set({ items: res.data, totalCount: res.metadata.totalCount, totalPages: res.metadata.totalPage, hasNext: res.metadata.hasNext, hasPrev: res.metadata.hasPrev })
-    } finally { set({ loading: false }) }
+      const res = await ordersApi.getAll(page, size, search)
+      set({
+        items:      res.data,
+        totalCount: res.metadata.totalCount,
+        totalPages: res.metadata.totalPage,
+        hasNext:    res.metadata.hasNext,
+        hasPrev:    res.metadata.hasPrev,
+      })
+    } finally {
+      set({ loading: false })
+    }
   },
 
-  goToPage: (p) => get().fetchAll(p),
-  changeSize: (s) => get().fetchAll(1, s),
-  searchOrders(q) { set({ search: q }); return get().fetchAll(1, get().size, q) },
+  goToPage: (page) => get().fetchAll(page),
+
+  changeSize: (size) => get().fetchAll(1, size),
+
+  searchOrders(query) {
+    set({ search: query })
+    return get().fetchAll(1, get().size, query)
+  },
 
   async add(payload) {
     await ordersApi.create(payload)
     await get().fetchAll(1, get().size)
   },
 
+  async updateStatus(id, status) {
+    await ordersApi.updateStatus(id, status)
+    set((state) => ({
+      items: state.items.map((order) =>
+        order.id === id ? { ...order, status } : order
+      ),
+    }))
+  },
+
   async remove(id) {
     await ordersApi.delete(id)
-    const remaining = get().items.filter(i => i.id !== id).length
+    const remaining = get().items.filter((order) => order.id !== id).length
     const targetPage = remaining === 0 && get().page > 1 ? get().page - 1 : get().page
     await get().fetchAll(targetPage)
   },

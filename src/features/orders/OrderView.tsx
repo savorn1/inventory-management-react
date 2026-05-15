@@ -7,17 +7,36 @@ import { useToast } from '@/hooks/useToast'
 import { AppTable, AppPagination, AppButton, AppBadge } from '@/components/ui'
 import type { BadgeVariant } from '@/components/ui'
 
-function statusVariant(status: string): BadgeVariant {
-  const map: Record<string, BadgeVariant> = { PENDING: 'warning', CONFIRMED: 'warning', SHIPPED: 'success', DELIVERED: 'success', CANCELLED: 'danger' }
-  return map[status] ?? 'warning'
+const ORDER_STATUSES = [
+  'PENDING',
+  'PROCESSING', 
+  'CONFIRMED', 
+  'SHIPPED', 
+  'DELIVERED', 
+  'CANCELLED',
+  'COMPLETED'
+] as const
+
+type OrderStatus = typeof ORDER_STATUSES[number]
+
+const STATUS_VARIANT: Record<OrderStatus, BadgeVariant> = {
+  PENDING:   'warning',
+  PROCESSING: 'warning',
+  CONFIRMED: 'warning',
+  SHIPPED:   'success',
+  DELIVERED: 'success',
+  CANCELLED: 'danger',
+  COMPLETED: 'success',
 }
 
-function paymentVariant(status: string): BadgeVariant {
-  return status === 'PAID' ? 'success' : status === 'PARTIAL' ? 'warning' : 'danger'
+const PAYMENT_VARIANT: Record<string, BadgeVariant> = {
+  PAID:    'success',
+  PARTIAL: 'warning',
+  UNPAID:  'danger',
 }
 
 function fmt(n: number) {
-  return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 export function OrderView() {
@@ -75,13 +94,26 @@ export function OrderView() {
               <td className="px-4 py-3 font-mono text-sm font-semibold text-indigo-700">{item.orderNo}</td>
               <td className="px-4 py-3 text-slate-700 font-medium">{item.clientName}</td>
               <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{item.orderDate ? item.orderDate.slice(0, 10) : '—'}</td>
-              <td className="px-4 py-3"><AppBadge variant={statusVariant(item.status)}>{item.status}</AppBadge></td>
+              <td className="px-4 py-3"><AppBadge variant={STATUS_VARIANT[item.status as OrderStatus] ?? 'warning'}>{item.status}</AppBadge></td>
               <td className="px-4 py-3 text-right font-semibold text-slate-800">${fmt(item.total)}</td>
-              <td className="px-4 py-3"><AppBadge variant={paymentVariant(item.paymentStatus)}>{item.paymentStatus}</AppBadge></td>
+              <td className="px-4 py-3"><AppBadge variant={PAYMENT_VARIANT[item.paymentStatus] ?? 'danger'}>{item.paymentStatus}</AppBadge></td>
               <td className="px-4 py-3">
-                {auth.can('ORDER_DELETE') && (
-                  <AppButton variant="delete" size="sm" onClick={() => removeOrder(item.id)}>{t('common.delete')}</AppButton>
-                )}
+                <div className="flex items-center gap-2">
+                  {auth.can('ORDER_UPDATE') && (
+                    <select
+                      value={item.status}
+                      onChange={e => store.updateStatus(item.id, e.target.value)}
+                      className="h-7 px-2 border border-slate-200 rounded-md text-xs outline-none focus:border-indigo-500 bg-white cursor-pointer"
+                    >
+                      {ORDER_STATUSES.map(s => (
+                        <option key={s} value={s}>{t(`order.status${s.charAt(0) + s.slice(1).toLowerCase()}`)}</option>
+                      ))}
+                    </select>
+                  )}
+                  {auth.can('ORDER_DELETE') && (
+                    <AppButton variant="delete" size="sm" onClick={() => removeOrder(item.id)}>{t('common.delete')}</AppButton>
+                  )}
+                </div>
               </td>
             </tr>
           ))

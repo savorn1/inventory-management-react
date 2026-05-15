@@ -59,6 +59,9 @@ export const ordersApi = {
   create: (dto: CreateOrderDTO) =>
     http.post<ApiResponse<OrderDTO>>('api/order', dto),
 
+  updateStatus: (id: number, status: string) =>
+    http.patch<ApiResponse<string>>(`api/order/${id}/status`, { status }),
+
   delete: (id: number) =>
     http.delete<ApiResponse<string>>(`api/order/${id}`),
 }
