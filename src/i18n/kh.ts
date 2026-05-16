@@ -200,6 +200,8 @@ export default {
     method: 'វិធីសាស្ត្រ',
     paidAt: 'បានទូទាត់នៅ',
     updatePayment: 'កែស្ថានភាព',
+    liveConnected: 'បន្តផ្ទាល់',
+    liveDisconnected: 'ផ្តាច់ការតភ្ជាប់',
     statusUpdated: 'ស្ថានភាពទូទាត់ត្រូវបានអាប់ដេតដោយជោគជ័យ។',
     statusUpdateFailed: 'បរាជ័យក្នុងការអាប់ដេតស្ថានភាពទូទាត់។',
   },

@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { usePaymentStore } from './store'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/hooks/useToast'
+import { usePaymentSocket } from '@/hooks/usePaymentSocket'
 import { AppTable, AppPagination, AppButton, AppBadge, AppModal } from '@/components/ui'
 import type { BadgeVariant } from '@/components/ui'
+import { formatDate, formatDateTime } from '@/utils/format'
 
 const PAYMENT_STATUSES = ['UNPAID', 'PAID', 'PARTIAL', 'REFUNDED'] as const
 type PaymentStatus = typeof PAYMENT_STATUSES[number]
@@ -35,6 +37,8 @@ export function PaymentView() {
   const [statusModal, setStatusModal] = useState<StatusModal | null>(null)
   const [saving, setSaving] = useState(false)
 
+  const { connected } = usePaymentSocket(() => store.fetchAll())
+
   useEffect(() => { store.fetchAll(1, 10) }, [])
 
   async function saveStatus() {
@@ -56,6 +60,10 @@ export function PaymentView() {
   return (
     <div className="p-4 md:p-7 flex flex-col gap-5">
       <div className="flex flex-wrap items-center gap-3">
+        <span className={`flex items-center gap-1.5 text-xs font-medium ${connected ? 'text-green-600' : 'text-slate-400'}`}>
+          <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-slate-300'}`} />
+          {connected ? t('payment.liveConnected') : t('payment.liveDisconnected')}
+        </span>
         <select
           value={store.statusFilter}
           onChange={e => store.setFilter(e.target.value)}
@@ -97,7 +105,7 @@ export function PaymentView() {
                 <AppBadge variant={PAYMENT_VARIANT[item.status as PaymentStatus] ?? 'danger'}>{item.status}</AppBadge>
               </td>
               <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
-                {item.paidAt ? item.paidAt.slice(0, 10) : '—'}
+                {formatDateTime(item.paidAt)}
               </td>
               {auth.can('ORDER_UPDATE') && (
                 <td className="px-4 py-3">

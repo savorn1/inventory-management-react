@@ -200,6 +200,8 @@ export default {
     method: 'Method',
     paidAt: 'Paid At',
     updatePayment: 'Update Status',
+    liveConnected: 'Live',
+    liveDisconnected: 'Disconnected',
     statusUpdated: 'Payment status updated successfully.',
     statusUpdateFailed: 'Failed to update payment status.',
   },

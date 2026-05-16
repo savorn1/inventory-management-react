@@ -200,6 +200,8 @@ export default {
     method: '方式',
     paidAt: '付款时间',
     updatePayment: '更新状态',
+    liveConnected: '实时连接',
+    liveDisconnected: '已断开',
     statusUpdated: '付款状态更新成功。',
     statusUpdateFailed: '更新付款状态失败。',
   },
