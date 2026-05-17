@@ -12,6 +12,7 @@ import { CreateOrderView } from '@/features/orders/CreateOrderView'
 import { PaymentView } from '@/features/payments/PaymentView'
 import { UserView } from '@/features/users/UserView'
 import { RoleView } from '@/features/roles/RoleView'
+import { ChatView } from '@/features/chat/ChatView'
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
       { path: 'payments',       element: <PaymentView /> },
       { path: 'users',          element: <UserView /> },
       { path: 'roles',          element: <RoleView /> },
+      { path: 'chat',           element: <ChatView /> },
     ],
   },
 ])

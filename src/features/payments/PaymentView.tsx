@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/useToast'
 import { usePaymentSocket } from '@/hooks/usePaymentSocket'
 import { AppTable, AppPagination, AppButton, AppBadge, AppModal } from '@/components/ui'
 import type { BadgeVariant } from '@/components/ui'
-import { formatDate, formatDateTime } from '@/utils/format'
+import { formatDateTime } from '@/utils/format'
 
 const PAYMENT_STATUSES = ['UNPAID', 'PAID', 'PARTIAL', 'REFUNDED'] as const
 type PaymentStatus = typeof PAYMENT_STATUSES[number]

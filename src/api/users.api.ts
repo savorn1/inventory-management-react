@@ -28,6 +28,9 @@ export const usersApi = {
   getById: (id: number) =>
     http.get<ApiResponse<SysUserDTO>>(`api/sys-user/${id}`),
 
+  getByIds: (ids: number[]) =>
+    http.get<ApiResponse<SysUserDTO[]>>(`api/sys-user/by-ids?ids=${ids.join(',')}`),
+
   create: (dto: CreateSysUserDTO) =>
     http.post<ApiResponse<SysUserDTO>>('api/sys-user', dto),
 
