@@ -220,7 +220,8 @@ export default {
     disconnected: 'Disconnected',
     direct: 'Direct',
     group: 'Group',
-    groupNamePlaceholder: 'Group name (optional)',
+    groupNamePlaceholder: 'Group name',
+    groupNameRequired: 'Group name is required',
     start: 'Start',
     messageDeleted: 'Message deleted',
     reply: 'Reply',
@@ -235,6 +236,7 @@ export default {
     reminderTomorrow: 'Tomorrow at 9 am',
     reminderCustom: 'Custom time',
     reminderSet: 'Set reminder',
+    sendHint: 'Enter to send · Shift+Enter for new line',
   },
   role: {
     title: 'Roles',

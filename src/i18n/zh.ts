@@ -220,7 +220,8 @@ export default {
     disconnected: '已断开',
     direct: '私聊',
     group: '群组',
-    groupNamePlaceholder: '群组名称（可选）',
+    groupNamePlaceholder: '群组名称',
+    groupNameRequired: '请输入群组名称',
     start: '开始',
     messageDeleted: '消息已删除',
     reply: '回复',
@@ -235,6 +236,7 @@ export default {
     reminderTomorrow: '明天上午 9 点',
     reminderCustom: '自定义时间',
     reminderSet: '设置提醒',
+    sendHint: 'Enter 发送 · Shift+Enter 换行',
   },
   role: {
     title: '角色',
