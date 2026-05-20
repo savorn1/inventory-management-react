@@ -1,15 +1,19 @@
-import { createPortal } from 'react-dom'
-import { useToast } from '@/hooks/useToast'
+import { createPortal } from "react-dom";
+import { useToast } from "@/hooks/useToast";
 
-const icons = { success: '✓', error: '✕', info: 'i' }
-const styles = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-indigo-500' }
+const icons = { success: "✓", error: "✕", info: "i" };
+const styles = {
+  success: "bg-emerald-500",
+  error: "bg-red-500",
+  info: "bg-indigo-500",
+};
 
 export function AppToast() {
-  const { toasts, remove } = useToast()
+  const { toasts, remove } = useToast();
 
   return createPortal(
     <div className="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none">
-      {toasts.map(toast => (
+      {toasts.map((toast) => (
         <div
           key={toast.id}
           className={`pointer-events-auto flex items-center gap-3 min-w-[260px] max-w-xs px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium ${styles[toast.type]}`}
@@ -27,6 +31,6 @@ export function AppToast() {
         </div>
       ))}
     </div>,
-    document.body
-  )
+    document.body,
+  );
 }

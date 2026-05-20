@@ -1,29 +1,27 @@
-import { http } from './http'
-import type { ApiResponse } from './types'
+import { http } from "./http";
+import type { ApiResponse } from "./types";
 
 export interface LoginRequest {
-  name: string
-  password: string
+  name: string;
+  password: string;
 }
 
 export interface LoginResponse {
-  accessToken: string
+  accessToken: string;
 }
 
 export interface UserProfile {
-  id: number
-  username: string
-  uuid: string
-  permissions: string[]
+  id: number;
+  username: string;
+  uuid: string;
+  permissions: string[];
 }
 
 export const authApi = {
   login: (body: LoginRequest) =>
-    http.post<ApiResponse<LoginResponse>>('api/auth/login', body),
+    http.post<ApiResponse<LoginResponse>>("api/auth/login", body),
 
-  profile: () =>
-    http.get<ApiResponse<UserProfile>>('api/auth/profile'),
+  profile: () => http.get<ApiResponse<UserProfile>>("api/auth/profile"),
 
-  logout: () =>
-    http.post<ApiResponse<null>>('api/auth/logout', {}),
-}
+  logout: () => http.post<ApiResponse<null>>("api/auth/logout", {}),
+};

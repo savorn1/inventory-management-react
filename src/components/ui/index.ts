@@ -1,8 +1,8 @@
-export { AppButton } from './AppButton'
-export { AppModal } from './AppModal'
-export { AppConfirmModal } from './AppConfirmModal'
-export { AppTable } from './AppTable'
-export { AppPagination } from './AppPagination'
-export { AppBadge } from './AppBadge'
-export { AppToast } from './AppToast'
-export type { BadgeVariant } from './AppBadge'
+export { AppButton } from "./AppButton";
+export { AppModal } from "./AppModal";
+export { AppConfirmModal } from "./AppConfirmModal";
+export { AppTable } from "./AppTable";
+export { AppPagination } from "./AppPagination";
+export { AppBadge } from "./AppBadge";
+export { AppToast } from "./AppToast";
+export type { BadgeVariant } from "./AppBadge";
