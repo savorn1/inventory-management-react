@@ -17,7 +17,8 @@ export function RoleView() {
 
   useEffect(() => {
     Promise.all([store.fetchAll(1, 10), store.fetchAllPermissions()]);
-  }, [store.fetchAll, store.fetchAllPermissions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);

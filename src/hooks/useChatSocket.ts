@@ -90,10 +90,11 @@ export function useChatSocket(
     clientRef.current = client;
     client.activate();
 
+    const msgSubs = msgSubsRef.current;
     return () => {
       typingUnsubRef.current?.();
-      msgSubsRef.current.forEach((unsub) => unsub());
-      msgSubsRef.current.clear();
+      msgSubs.forEach((fn) => fn());
+      msgSubs.clear();
       client.deactivate();
     };
   }, []);

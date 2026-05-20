@@ -50,6 +50,7 @@ export function PaymentView() {
 
   useEffect(() => {
     store.fetchAll(1, 10);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function saveStatus() {

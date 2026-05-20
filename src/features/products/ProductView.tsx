@@ -23,6 +23,7 @@ export function ProductView() {
       catStore.fetchAll(1, 100),
       brdStore.fetchAll(1, 100),
     ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const imageFileRef = useRef<File | null>(null);

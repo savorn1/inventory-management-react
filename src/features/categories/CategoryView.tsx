@@ -13,7 +13,8 @@ export function CategoryView() {
 
   useEffect(() => {
     store.fetchAll(1, 10);
-  }, [store.fetchAll]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     showModal,

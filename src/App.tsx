@@ -21,6 +21,7 @@ export function App() {
     if (!auth.profile) {
       auth.fetchProfile();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   return (

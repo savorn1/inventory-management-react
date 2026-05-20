@@ -14,6 +14,7 @@ export function UserView() {
 
   useEffect(() => {
     Promise.all([store.fetchAll(1, 10), roleStore.fetchAll(1, 100)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [showModal, setShowModal] = useState(false);

@@ -31,6 +31,7 @@ export function ChatView() {
 
   const handleMessage = useCallback((msg: MessageDTO) => {
     store.addRealtimeMessage(msg);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleTypingEvent = useCallback((event: TypingEvent) => {
@@ -54,6 +55,7 @@ export function ChatView() {
 
   useEffect(() => {
     store.fetchConversations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

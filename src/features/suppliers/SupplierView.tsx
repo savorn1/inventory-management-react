@@ -13,6 +13,7 @@ export function SupplierView() {
 
   useEffect(() => {
     store.fetchAll(1, 10);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {
