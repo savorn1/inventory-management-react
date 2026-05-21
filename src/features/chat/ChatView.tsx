@@ -58,6 +58,21 @@ export function ChatView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Poll conversation list every 30s to catch updates from users in other sessions
+  useEffect(() => {
+    const id = setInterval(() => store.fetchConversations(), 30_000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Poll active conversation messages every 10s when WebSocket is disconnected
+  useEffect(() => {
+    if (connected || !store.activeId) return;
+    const id = setInterval(() => store.fetchMessages(1), 10_000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, store.activeId]);
+
   useEffect(() => {
     function check() {
       const now = Date.now();
