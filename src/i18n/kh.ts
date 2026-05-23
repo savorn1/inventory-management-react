@@ -10,6 +10,7 @@ export default {
     payments: "ការទូទាត់",
     users: "អ្នកប្រើប្រាស់",
     roles: "តួនាទី",
+    pricing: "តម្លៃ",
   },
   common: {
     add: "បន្ថែម",
@@ -87,8 +88,10 @@ export default {
     price: "តម្លៃ ($)",
     pricePlaceholder: "0.00",
     image: "រូបភាព",
+    images: "រូបភាពច្រើន",
     uploadImage: "ចុចដើម្បីបញ្ចូលរូបភាព",
     changeImage: "ចុចដើម្បីប្តូររូបភាព",
+    addImages: "បន្ថែមរូបភាព",
   },
   brand: {
     title: "ម៉ាក",

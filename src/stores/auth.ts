@@ -3,6 +3,7 @@ import { authApi } from "@/api/auth.api";
 import type { UserProfile } from "@/api/auth.api";
 
 const TOKEN_KEY = "access_token";
+const REFRESH_KEY = "refresh_token";
 
 interface AuthState {
   token: string | null;
@@ -34,6 +35,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const res = await authApi.login({ name, password });
     const token = res.data.accessToken;
     localStorage.setItem(TOKEN_KEY, token);
+    if (res.data.refreshToken) {
+      localStorage.setItem(REFRESH_KEY, res.data.refreshToken);
+    }
     set({ token });
     await get().fetchProfile();
   },
@@ -55,6 +59,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       /* ignore */
     }
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_KEY);
     set({ token: null, profile: null });
   },
 }));

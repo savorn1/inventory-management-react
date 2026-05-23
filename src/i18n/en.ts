@@ -11,6 +11,7 @@ export default {
     payments: "Payments",
     users: "Users",
     roles: "Roles",
+    pricing: "Pricing",
   },
   common: {
     add: "Add",
@@ -88,8 +89,10 @@ export default {
     price: "Price ($)",
     pricePlaceholder: "0.00",
     image: "Image",
+    images: "Images",
     uploadImage: "Click to upload image",
     changeImage: "Click to change image",
+    addImages: "Add images",
   },
   brand: {
     title: "Brands",

@@ -11,6 +11,7 @@ export default {
     payments: "付款",
     users: "用户",
     roles: "角色",
+    pricing: "定价",
   },
   common: {
     add: "添加",
@@ -88,8 +89,10 @@ export default {
     price: "价格 ($)",
     pricePlaceholder: "0.00",
     image: "图片",
+    images: "图片集",
     uploadImage: "点击上传图片",
     changeImage: "点击更换图片",
+    addImages: "添加图片",
   },
   brand: {
     title: "品牌",

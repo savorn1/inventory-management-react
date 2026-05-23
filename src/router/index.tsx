@@ -13,6 +13,7 @@ import { PaymentView } from "@/features/payments/PaymentView";
 import { UserView } from "@/features/users/UserView";
 import { RoleView } from "@/features/roles/RoleView";
 import { ChatView } from "@/features/chat/ChatView";
+import { PricingView } from "@/views/PricingView";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
       { path: "users", element: <UserView /> },
       { path: "roles", element: <RoleView /> },
       { path: "chat", element: <ChatView /> },
+      { path: "pricing", element: <PricingView /> },
     ],
   },
 ]);

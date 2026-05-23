@@ -11,6 +11,7 @@ export interface ProductDTO {
   categoryId: number;
   categoryName: string;
   imageUrl?: string;
+  imageUrls?: string[];
 }
 
 export interface CreateProductDTO {
@@ -19,6 +20,8 @@ export interface CreateProductDTO {
   price: number;
   brandId: number | null;
   categoryId: number | null;
+  imageUrl?: string | null;
+  imageUrls?: string[];
 }
 
 export const productsApi = {
@@ -42,9 +45,4 @@ export const productsApi = {
 
   delete: (id: number) => http.delete<ApiResponse<string>>(`api/product/${id}`),
 
-  uploadImage: (id: number, file: File) => {
-    const fd = new FormData();
-    fd.append("file", file);
-    return http.postFile<ApiResponse<string>>(`api/product/${id}/image`, fd);
-  },
 };

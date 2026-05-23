@@ -1,5 +1,6 @@
 export * from "./types";
 export * from "./auth.api";
+export * from "./files.api";
 export * from "./products.api";
 export * from "./brands.api";
 export * from "./categories.api";

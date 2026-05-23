@@ -8,6 +8,12 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   accessToken: string;
+  refreshToken?: string;
+}
+
+export interface RefreshResponse {
+  accessToken: string;
+  refreshToken?: string;
 }
 
 export interface UserProfile {
@@ -20,6 +26,13 @@ export interface UserProfile {
 export const authApi = {
   login: (body: LoginRequest) =>
     http.post<ApiResponse<LoginResponse>>("api/auth/login", body),
+
+  refresh: (refreshToken: string) =>
+    fetch("/api/auth/refresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    }).then((r) => r.json() as Promise<ApiResponse<RefreshResponse>>),
 
   profile: () => http.get<ApiResponse<UserProfile>>("api/auth/profile"),
 
