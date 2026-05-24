@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { App } from "@/App";
 import { LoginView } from "@/views/LoginView";
-import { Dashboard } from "@/views/Dashboard";
+import { Dashboard } from "@/features/dashboard/Dashboard";
 import { CategoryView } from "@/features/categories/CategoryView";
 import { ProductView } from "@/features/products/ProductView";
 import { BrandView } from "@/features/brands/BrandView";

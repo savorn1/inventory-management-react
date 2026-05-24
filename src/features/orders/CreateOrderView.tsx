@@ -6,6 +6,7 @@ import { clientsApi } from "@/api/clients.api";
 import { productsApi } from "@/api/products.api";
 import { useToast } from "@/hooks/useToast";
 import { AppButton } from "@/components/ui";
+import { ORDER_STATUSES } from "./constants";
 import type { ClientDTO } from "@/api/clients.api";
 import type { ProductDTO } from "@/api/products.api";
 
@@ -212,13 +213,7 @@ export function CreateOrderView() {
                 }
                 className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white"
               >
-                {[
-                  "PENDING",
-                  "CONFIRMED",
-                  "SHIPPED",
-                  "DELIVERED",
-                  "CANCELLED",
-                ].map((s) => (
+                {ORDER_STATUSES.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>

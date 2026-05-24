@@ -59,6 +59,15 @@ export default {
     welcome: "欢迎使用 InvenAdmin",
     welcomeDesc:
       "在一个地方管理您的库存分类、产品、品牌、供应商和客户。使用侧边栏在各部分之间导航。",
+    totalRevenue: "总收入",
+    orderStatus: "订单状态",
+    productsByBrand: "各品牌产品数",
+    productsByCategory: "各分类产品数",
+    paymentChart: "月度支付概览",
+    products: "产品",
+    amount: "金额",
+    lastUpdated: "最后更新",
+    refresh: "刷新",
   },
   status: {
     active: "启用",

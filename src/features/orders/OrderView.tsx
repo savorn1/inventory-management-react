@@ -11,38 +11,14 @@ import {
   AppBadge,
   AppModal,
 } from "@/components/ui";
-import type { BadgeVariant } from "@/components/ui";
-
-const ORDER_STATUSES = [
-  "PENDING",
-  "PROCESSING",
-  "CONFIRMED",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
-  "COMPLETED",
-] as const;
-
-const PAYMENT_STATUSES = ["PAID", "PARTIAL", "UNPAID"] as const;
-
-type OrderStatus = (typeof ORDER_STATUSES)[number];
-type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
-
-const STATUS_VARIANT: Record<OrderStatus, BadgeVariant> = {
-  PENDING: "warning",
-  PROCESSING: "warning",
-  CONFIRMED: "warning",
-  SHIPPED: "success",
-  DELIVERED: "success",
-  CANCELLED: "danger",
-  COMPLETED: "success",
-};
-
-const PAYMENT_VARIANT: Record<PaymentStatus, BadgeVariant> = {
-  PAID: "success",
-  PARTIAL: "warning",
-  UNPAID: "danger",
-};
+import {
+  ORDER_STATUSES,
+  PAYMENT_STATUSES,
+  STATUS_VARIANT,
+  PAYMENT_VARIANT,
+  type OrderStatus,
+  type PaymentStatus,
+} from "./constants";
 
 function fmt(n: number) {
   return n.toLocaleString("en-US", {

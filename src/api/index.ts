@@ -10,3 +10,4 @@ export * from "./orders.api";
 export * from "./users.api";
 export * from "./roles.api";
 export * from "./chat.api";
+export * from "./dashboard.api";

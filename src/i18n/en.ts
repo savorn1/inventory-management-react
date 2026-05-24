@@ -59,6 +59,15 @@ export default {
     welcome: "Welcome to InvenAdmin",
     welcomeDesc:
       "Manage your inventory categories, products, brands, suppliers, and clients from one place. Use the sidebar to navigate between sections.",
+    totalRevenue: "Total Revenue",
+    orderStatus: "Order Status",
+    productsByBrand: "Products by Brand",
+    productsByCategory: "Products by Category",
+    paymentChart: "Monthly Payment Overview",
+    products: "Products",
+    amount: "Amount",
+    lastUpdated: "Last updated",
+    refresh: "Refresh",
   },
   status: {
     active: "Active",

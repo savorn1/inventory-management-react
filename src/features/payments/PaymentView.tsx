@@ -11,27 +11,15 @@ import {
   AppBadge,
   AppModal,
 } from "@/components/ui";
-import type { BadgeVariant } from "@/components/ui";
-import { formatDateTime } from "@/utils/format";
+import { formatCurrency, formatDateTime } from "@/utils/format";
+import { PAYMENT_STATUSES, PAYMENT_VARIANT, type PaymentStatus } from "./constants";
 
-const PAYMENT_STATUSES = ["UNPAID", "PAID", "PARTIAL", "REFUNDED"] as const;
-type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
+// Shared class strings
+const TH_CLS = "px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wide";
+const SELECT_CLS =
+  "h-9 px-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white cursor-pointer";
 
-const PAYMENT_VARIANT: Record<PaymentStatus, BadgeVariant> = {
-  PAID: "success",
-  PARTIAL: "warning",
-  UNPAID: "danger",
-  REFUNDED: "warning",
-};
-
-function fmt(n: number) {
-  return n.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
-
-interface StatusModal {
+interface StatusModalState {
   paymentId: number;
   paymentNo: string;
   status: string;
@@ -43,15 +31,14 @@ export function PaymentView() {
   const auth = useAuthStore();
   const toast = useToast();
 
-  const [statusModal, setStatusModal] = useState<StatusModal | null>(null);
+  const [statusModal, setStatusModal] = useState<StatusModalState | null>(null);
   const [saving, setSaving] = useState(false);
 
   const { connected } = usePaymentSocket(() => store.fetchAll());
 
   useEffect(() => {
     store.fetchAll(1, 10);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [store.fetchAll]);
 
   async function saveStatus() {
     if (!statusModal) return;
@@ -70,11 +57,13 @@ export function PaymentView() {
     }
   }
 
-  const selectCls =
-    "h-9 px-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white cursor-pointer";
+  function statusLabel(s: string) {
+    return t(`order.payment${s.charAt(0) + s.slice(1).toLowerCase()}`);
+  }
 
   return (
     <div className="p-4 md:p-7 flex flex-col gap-5">
+      {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         <span
           className={`flex items-center gap-1.5 text-xs font-medium ${connected ? "text-green-600" : "text-slate-400"}`}
@@ -82,52 +71,36 @@ export function PaymentView() {
           <span
             className={`w-2 h-2 rounded-full ${connected ? "bg-green-500 animate-pulse" : "bg-slate-300"}`}
           />
-          {connected
-            ? t("payment.liveConnected")
-            : t("payment.liveDisconnected")}
+          {connected ? t("payment.liveConnected") : t("payment.liveDisconnected")}
         </span>
+
         <select
           value={store.statusFilter}
           onChange={(e) => store.setFilter(e.target.value)}
-          className={selectCls}
+          className={SELECT_CLS}
         >
           <option value="">{t("order.allPaymentStatus")}</option>
           {PAYMENT_STATUSES.map((s) => (
             <option key={s} value={s}>
-              {t(`order.payment${s.charAt(0) + s.slice(1).toLowerCase()}`)}
+              {statusLabel(s)}
             </option>
           ))}
         </select>
       </div>
 
+      {/* Table */}
       <AppTable
         head={
           <>
-            <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide w-10">
-              #
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("payment.paymentNo")}
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("order.orderNo")}
-            </th>
-            <th className="px-4 py-3 text-right text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("payment.amount")}
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("payment.method")}
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("order.paymentStatus")}
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">
-              {t("payment.paidAt")}
-            </th>
+            <th className={`${TH_CLS} text-left w-10`}>#</th>
+            <th className={`${TH_CLS} text-left`}>{t("payment.paymentNo")}</th>
+            <th className={`${TH_CLS} text-left`}>{t("order.orderNo")}</th>
+            <th className={`${TH_CLS} text-right`}>{t("payment.amount")}</th>
+            <th className={`${TH_CLS} text-left`}>{t("payment.method")}</th>
+            <th className={`${TH_CLS} text-left`}>{t("order.paymentStatus")}</th>
+            <th className={`${TH_CLS} text-left`}>{t("payment.paidAt")}</th>
             {auth.can("ORDER_UPDATE") && (
-              <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">
-                {t("common.actions")}
-              </th>
+              <th className={`${TH_CLS} text-left`}>{t("common.actions")}</th>
             )}
           </>
         }
@@ -158,16 +131,14 @@ export function PaymentView() {
                 </td>
                 <td className="px-4 py-3 text-slate-600">{item.orderNo}</td>
                 <td className="px-4 py-3 text-right font-semibold text-slate-800">
-                  ${fmt(item.amount)}
+                  {formatCurrency(item.amount)}
                 </td>
                 <td className="px-4 py-3 text-slate-600">
                   {item.paymentMethod || "—"}
                 </td>
                 <td className="px-4 py-3">
                   <AppBadge
-                    variant={
-                      PAYMENT_VARIANT[item.status as PaymentStatus] ?? "danger"
-                    }
+                    variant={PAYMENT_VARIANT[item.status as PaymentStatus] ?? "danger"}
                   >
                     {item.status}
                   </AppBadge>
@@ -208,6 +179,7 @@ export function PaymentView() {
         onSizeChange={store.changeSize}
       />
 
+      {/* Update status modal */}
       <AppModal
         show={!!statusModal}
         title={`${t("payment.updatePayment")} — ${statusModal?.paymentNo ?? ""}`}
@@ -221,19 +193,18 @@ export function PaymentView() {
             <select
               value={statusModal?.status ?? ""}
               onChange={(e) =>
-                setStatusModal((prev) =>
-                  prev ? { ...prev, status: e.target.value } : prev,
-                )
+                setStatusModal((prev) => prev && { ...prev, status: e.target.value })
               }
-              className="w-full h-9 px-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white cursor-pointer"
+              className={`w-full ${SELECT_CLS}`}
             >
               {PAYMENT_STATUSES.map((s) => (
                 <option key={s} value={s}>
-                  {t(`order.payment${s.charAt(0) + s.slice(1).toLowerCase()}`)}
+                  {statusLabel(s)}
                 </option>
               ))}
             </select>
           </div>
+
           <div className="flex justify-end gap-2 pt-1">
             <AppButton
               variant="cancel"

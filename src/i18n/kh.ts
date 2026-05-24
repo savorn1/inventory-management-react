@@ -58,6 +58,15 @@ export default {
     welcome: "សូមស្វាគមន៍មកកាន់ InvenAdmin",
     welcomeDesc:
       "គ្រប់គ្រងប្រភេទ ផលិតផល ម៉ាក អ្នកផ្គត់ផ្គង់ និងអតិថិជននៃស្តុករបស់អ្នកពីកន្លែងតែមួយ។ ប្រើរបារចំហៀងដើម្បីរុករករវាងផ្នែក។",
+    totalRevenue: "ចំណូលសរុប",
+    orderStatus: "ស្ថានភាពបញ្ជាទិញ",
+    productsByBrand: "ផលិតផលតាមម៉ាក",
+    productsByCategory: "ផលិតផលតាមប្រភេទ",
+    paymentChart: "ទិដ្ឋភាពទូទាត់ប្រចាំខែ",
+    products: "ផលិតផល",
+    amount: "ចំនួនទឹកប្រាក់",
+    lastUpdated: "បានធ្វើបច្ចុប្បន្នភាពចុងក្រោយ",
+    refresh: "រស្មីស្រឡះ",
   },
   status: {
     active: "សកម្ម",
