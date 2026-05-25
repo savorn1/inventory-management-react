@@ -5,4 +5,6 @@ export { AppTable } from "./AppTable";
 export { AppPagination } from "./AppPagination";
 export { AppBadge } from "./AppBadge";
 export { AppToast } from "./AppToast";
+export { AppProductCombobox } from "./AppProductCombobox";
 export type { BadgeVariant } from "./AppBadge";
+export type { AppProductComboboxProps } from "./AppProductCombobox";
