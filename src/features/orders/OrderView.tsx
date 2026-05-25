@@ -325,6 +325,15 @@ export function OrderView() {
                       <AppButton
                         variant="edit"
                         size="sm"
+                        onClick={() => navigate(`/orders/${item.id}/edit`)}
+                      >
+                        {t("common.edit")}
+                      </AppButton>
+                    )}
+                    {auth.can("ORDER_UPDATE") && (
+                      <AppButton
+                        variant="primary"
+                        size="sm"
                         onClick={() =>
                           setStatusModal({
                             orderId: item.id,

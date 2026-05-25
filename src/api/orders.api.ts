@@ -71,6 +71,9 @@ export const ordersApi = {
   create: (dto: CreateOrderDTO) =>
     http.post<ApiResponse<OrderDTO>>("api/order", dto),
 
+  update: (id: number, dto: CreateOrderDTO) =>
+    http.put<ApiResponse<OrderDTO>>(`api/order/${id}`, dto),
+
   updateStatus: (id: number, status: string) =>
     http.patch<ApiResponse<string>>(`api/order/${id}/status`, { status }),
 

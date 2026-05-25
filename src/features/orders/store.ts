@@ -33,6 +33,7 @@ interface OrderActions {
   setPaymentFilter: (paymentStatus: string) => Promise<void>;
   setProductFilter: (id: number | null) => Promise<void>;
   add: (payload: CreateOrderDTO) => Promise<void>;
+  update: (id: number, payload: CreateOrderDTO) => Promise<void>;
   updateStatus: (id: number, status: string) => Promise<void>;
   updatePaymentStatus: (id: number, paymentStatus: string) => Promise<void>;
   remove: (id: number) => Promise<void>;
@@ -135,6 +136,11 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   async add(payload) {
     await ordersApi.create(payload);
     await get().fetchAll(1, get().size);
+  },
+
+  async update(id, payload) {
+    await ordersApi.update(id, payload);
+    await get().fetchAll(get().page, get().size);
   },
 
   async updateStatus(id, status) {
