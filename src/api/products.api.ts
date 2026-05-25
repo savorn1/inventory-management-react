@@ -12,6 +12,7 @@ export interface ProductDTO {
   categoryName: string;
   imageUrl?: string;
   imageUrls?: string[];
+  stock?: number; // optional — shown as badge when backend provides it
 }
 
 export interface CreateProductDTO {

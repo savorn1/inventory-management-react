@@ -14,6 +14,7 @@ interface OrderState {
   search: string;
   statusFilter: string;
   paymentStatusFilter: string;
+  productIdFilter: number | null;
 }
 
 interface OrderActions {
@@ -23,12 +24,14 @@ interface OrderActions {
     search?: string,
     statusFilter?: string,
     paymentStatusFilter?: string,
+    productIdFilter?: number | null,
   ) => Promise<void>;
   goToPage: (page: number) => Promise<void>;
   changeSize: (size: number) => Promise<void>;
   searchOrders: (query: string) => Promise<void>;
   setStatusFilter: (status: string) => Promise<void>;
   setPaymentFilter: (paymentStatus: string) => Promise<void>;
+  setProductFilter: (id: number | null) => Promise<void>;
   add: (payload: CreateOrderDTO) => Promise<void>;
   updateStatus: (id: number, status: string) => Promise<void>;
   updatePaymentStatus: (id: number, paymentStatus: string) => Promise<void>;
@@ -49,6 +52,7 @@ const initialState: OrderState = {
   search: "",
   statusFilter: "",
   paymentStatusFilter: "",
+  productIdFilter: null,
 };
 
 export const useOrderStore = create<OrderStore>((set, get) => ({
@@ -60,6 +64,7 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     search = get().search,
     statusFilter = get().statusFilter,
     paymentStatusFilter = get().paymentStatusFilter,
+    productIdFilter = get().productIdFilter,
   ) {
     set({ loading: true, page, size });
     try {
@@ -69,6 +74,7 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
         search,
         statusFilter,
         paymentStatusFilter,
+        productIdFilter ?? undefined,
       );
       set({
         items: res.data,
@@ -110,6 +116,19 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       get().search,
       get().statusFilter,
       paymentStatus,
+      get().productIdFilter,
+    );
+  },
+
+  setProductFilter(id) {
+    set({ productIdFilter: id });
+    return get().fetchAll(
+      1,
+      get().size,
+      get().search,
+      get().statusFilter,
+      get().paymentStatusFilter,
+      id,
     );
   },
 

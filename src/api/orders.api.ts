@@ -53,6 +53,7 @@ export const ordersApi = {
     q = "",
     statusFilter = "",
     paymentStatusFilter = "",
+    productId?: number,
   ) => {
     const params = new URLSearchParams({
       page: String(page),
@@ -61,6 +62,7 @@ export const ordersApi = {
     if (q) params.set("q", q);
     if (statusFilter) params.set("status", statusFilter);
     if (paymentStatusFilter) params.set("paymentStatus", paymentStatusFilter);
+    if (productId) params.set("productId", String(productId));
     return http.get<PageResponse<OrderDTO>>(`api/order?${params}`);
   },
 

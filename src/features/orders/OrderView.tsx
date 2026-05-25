@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useOrderStore } from "./store";
 import { useAuthStore } from "@/stores/auth";
 import { useToast } from "@/hooks/useToast";
+import { productsApi, type ProductDTO } from "@/api/products.api";
 import {
   AppTable,
   AppPagination,
@@ -42,6 +43,59 @@ export function OrderView() {
 
   const [statusModal, setStatusModal] = useState<StatusModal | null>(null);
   const [saving, setSaving] = useState(false);
+
+  // product combobox
+  const [productQuery, setProductQuery] = useState("");
+  const [productOptions, setProductOptions] = useState<ProductDTO[]>([]);
+  const [productDropOpen, setProductDropOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductDTO | null>(null);
+  const productRef = useRef<HTMLDivElement>(null);
+
+  // close dropdown on outside click
+  useEffect(() => {
+    function handleOutside(e: MouseEvent) {
+      if (productRef.current && !productRef.current.contains(e.target as Node)) {
+        setProductDropOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
+
+  // debounced product fetch — all setState inside the async callback to satisfy React Compiler
+  useEffect(() => {
+    const query = productQuery.trim();
+    const timer = setTimeout(async () => {
+      if (!query) {
+        setProductOptions([]);
+        setProductDropOpen(false);
+        return;
+      }
+      try {
+        const res = await productsApi.getAll(1, 20, query);
+        setProductOptions(res.data);
+        setProductDropOpen(true);
+      } catch {
+        setProductOptions([]);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [productQuery]);
+
+  function selectProduct(product: ProductDTO) {
+    setSelectedProduct(product);
+    setProductQuery(product.name);
+    setProductDropOpen(false);
+    store.setProductFilter(product.id);
+  }
+
+  function clearProduct() {
+    setSelectedProduct(null);
+    setProductQuery("");
+    setProductOptions([]);
+    setProductDropOpen(false);
+    store.setProductFilter(null);
+  }
 
   useEffect(() => {
     store.fetchAll(1, 10);
@@ -87,6 +141,68 @@ export function OrderView() {
           className="h-9 px-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 flex-1 min-w-0 max-w-xs placeholder:text-slate-400"
           placeholder={t("order.searchPlaceholder")}
         />
+
+        {/* Product search combobox */}
+        <div className="relative" ref={productRef}>
+          <div
+            className={`flex items-center h-9 border rounded-lg bg-white overflow-hidden min-w-[200px] ${
+              productDropOpen ? "border-indigo-500" : "border-slate-200"
+            }`}
+          >
+            <input
+              value={productQuery}
+              onChange={(e) => {
+                setProductQuery(e.target.value);
+                if (selectedProduct) {
+                  setSelectedProduct(null);
+                  store.setProductFilter(null);
+                }
+              }}
+              onFocus={() => {
+                if (productOptions.length > 0) setProductDropOpen(true);
+              }}
+              className="flex-1 h-full px-3 text-sm outline-none bg-transparent placeholder:text-slate-400"
+              placeholder={t("order.searchByProduct")}
+            />
+            {selectedProduct && (
+              <button
+                type="button"
+                onClick={clearProduct}
+                className="pr-2 text-slate-400 hover:text-slate-600 text-xl leading-none"
+                aria-label="Clear product filter"
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+          {productDropOpen && productOptions.length > 0 && (
+            <ul className="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg max-h-56 overflow-y-auto">
+              {productOptions.map((p) => (
+                <li
+                  key={p.id}
+                  onMouseDown={() => selectProduct(p)}
+                  className="px-3 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 cursor-pointer flex items-center gap-2"
+                >
+                  {p.imageUrl && (
+                    <img
+                      src={p.imageUrl}
+                      alt={p.name}
+                      className="w-6 h-6 rounded object-cover shrink-0"
+                    />
+                  )}
+                  <span className="font-medium truncate">{p.name}</span>
+                  {p.brandName && (
+                    <span className="text-slate-400 text-xs ml-auto shrink-0">
+                      {p.brandName}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <select
           value={store.statusFilter}
           onChange={(e) => store.setStatusFilter(e.target.value)}
