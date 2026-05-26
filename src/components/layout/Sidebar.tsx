@@ -59,6 +59,18 @@ const allNavItems = [
     icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z",
   },
   {
+    path: "/stock-movements",
+    labelKey: "nav.stockMovements",
+    permission: "PRODUCT_READ",
+    icon: "M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4",
+  },
+  {
+    path: "/open-items",
+    labelKey: "nav.openItems",
+    permission: "OPEN_ITEM_READ",
+    icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 12l2 2 4-4",
+  },
+  {
     path: "/users",
     labelKey: "nav.users",
     permission: "USER_READ",

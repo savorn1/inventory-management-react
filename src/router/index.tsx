@@ -17,6 +17,9 @@ import { UserView } from "@/features/users/UserView";
 import { RoleView } from "@/features/roles/RoleView";
 import { ChatView } from "@/features/chat/ChatView";
 import { PricingView } from "@/views/PricingView";
+import { StockMovementView } from "@/features/stock-movements/StockMovementView";
+import { OpenItemView } from "@/features/open-items/OpenItemView";
+import { CreateOpenItemView } from "@/features/open-items/CreateOpenItemView";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +47,9 @@ export const router = createBrowserRouter([
       { path: "roles", element: <RoleView /> },
       { path: "chat", element: <ChatView /> },
       { path: "pricing", element: <PricingView /> },
+      { path: "stock-movements", element: <StockMovementView /> },
+      { path: "open-items", element: <OpenItemView /> },
+      { path: "open-items/create", element: <CreateOpenItemView /> },
     ],
   },
 ]);
