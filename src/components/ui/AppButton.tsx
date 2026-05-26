@@ -11,7 +11,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variantCls: Record<Variant, string> = {
   primary: "bg-indigo-600 hover:bg-indigo-700 text-white border-0",
   cancel:
-    "bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200",
+    "bg-red-50 hover:bg-red-100 text-red-600 border border-red-200",
   edit: "bg-blue-50 hover:bg-blue-100 text-blue-700 border-0",
   delete: "bg-red-50 hover:bg-red-100 text-red-600 border-0",
 };
