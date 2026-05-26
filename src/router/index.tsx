@@ -10,6 +10,8 @@ import { ClientView } from "@/features/clients/ClientView";
 import { OrderView } from "@/features/orders/OrderView";
 import { CreateOrderView } from "@/features/orders/CreateOrderView";
 import { EditOrderView } from "@/features/orders/EditOrderView";
+import { PurchaseOrderView } from "@/features/purchase-orders/PurchaseOrderView";
+import { CreatePurchaseOrderView } from "@/features/purchase-orders/CreatePurchaseOrderView";
 import { PaymentView } from "@/features/payments/PaymentView";
 import { UserView } from "@/features/users/UserView";
 import { RoleView } from "@/features/roles/RoleView";
@@ -35,6 +37,8 @@ export const router = createBrowserRouter([
       { path: "orders", element: <OrderView /> },
       { path: "orders/create", element: <CreateOrderView /> },
       { path: "orders/:id/edit", element: <EditOrderView /> },
+      { path: "purchase-orders", element: <PurchaseOrderView /> },
+      { path: "purchase-orders/create", element: <CreatePurchaseOrderView /> },
       { path: "payments", element: <PaymentView /> },
       { path: "users", element: <UserView /> },
       { path: "roles", element: <RoleView /> },

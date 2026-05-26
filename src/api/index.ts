@@ -7,6 +7,7 @@ export * from "./categories.api";
 export * from "./clients.api";
 export * from "./suppliers.api";
 export * from "./orders.api";
+export * from "./purchase-orders.api";
 export * from "./users.api";
 export * from "./roles.api";
 export * from "./chat.api";

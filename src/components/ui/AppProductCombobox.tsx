@@ -7,6 +7,11 @@ export interface AppProductComboboxProps {
   /** Called when the user selects a product from the dropdown. */
   onSelect: (product: ProductDTO) => void;
   placeholder?: string;
+  /**
+   * When true, out-of-stock products are still selectable (useful for
+   * purchase orders where you're restocking from a supplier).
+   */
+  allowOutOfStock?: boolean;
 }
 
 /**
@@ -22,6 +27,7 @@ export function AppProductCombobox({
   onSearch,
   onSelect,
   placeholder = "Search product…",
+  allowOutOfStock = false,
 }: AppProductComboboxProps) {
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<ProductDTO[]>([]);
@@ -102,10 +108,16 @@ export function AppProductCombobox({
         e.preventDefault();
         setActiveIdx((i) => Math.max(i - 1, 0));
         break;
-      case "Enter":
+      case "Enter": {
         e.preventDefault();
-        if (activeIdx >= 0 && items[activeIdx]) pick(items[activeIdx]);
+        const target = activeIdx >= 0 ? items[activeIdx] : undefined;
+        if (target) {
+          const isBlocked =
+            target.stock !== undefined && target.stock === 0 && !allowOutOfStock;
+          if (!isBlocked) pick(target);
+        }
         break;
+      }
       case "Escape":
         setOpen(false);
         setActiveIdx(-1);
@@ -235,12 +247,13 @@ export function AppProductCombobox({
             const outOfStock = p.stock !== undefined && p.stock === 0;
             const lowStock =
               p.stock !== undefined && p.stock > 0 && p.stock <= 5;
+            const blocked = outOfStock && !allowOutOfStock;
             return (
               <li
                 key={p.id}
-                onMouseDown={() => !outOfStock && pick(p)}
+                onMouseDown={() => !blocked && pick(p)}
                 className={`px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${
-                  outOfStock
+                  blocked
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
                 } ${
