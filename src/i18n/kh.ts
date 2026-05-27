@@ -104,6 +104,11 @@ export default {
     uploadImage: "ចុចដើម្បីបញ្ចូលរូបភាព",
     changeImage: "ចុចដើម្បីប្តូររូបភាព",
     addImages: "បន្ថែមរូបភាព",
+    stock: "ស្តុក",
+    sortByDefault: "តម្រៀបតាម...",
+    sortByCreatedAt: "កាលបរិច្ឆេទបន្ថែម",
+    sortAsc: "ឡើង",
+    sortDesc: "ចុះ",
   },
   brand: {
     title: "ម៉ាក",

@@ -26,12 +26,14 @@ export interface CreateProductDTO {
 }
 
 export const productsApi = {
-  getAll: (page = 1, size = 10, name = "") => {
+  getAll: (page = 1, size = 10, name = "", sortBy = "", sortOrder = "asc") => {
     const params = new URLSearchParams({
       page: String(page),
       size: String(size),
     });
     if (name) params.set("name", name);
+    if (sortBy) params.set("sortBy", sortBy);
+    if (sortBy) params.set("sortOrder", sortOrder);
     return http.get<PageResponse<ProductDTO>>(`api/product?${params}`);
   },
 

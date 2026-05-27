@@ -12,10 +12,13 @@ interface ProductStore {
   hasNext: boolean;
   hasPrev: boolean;
   search: string;
-  fetchAll: (p?: number, s?: number, q?: string) => Promise<void>;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  fetchAll: (p?: number, s?: number, q?: string, sortBy?: string, sortOrder?: string) => Promise<void>;
   goToPage: (p: number) => Promise<void>;
   changeSize: (s: number) => Promise<void>;
   searchByName: (q: string) => Promise<void>;
+  setSort: (sortBy: string, sortOrder: "asc" | "desc") => Promise<void>;
   add: (payload: CreateProductDTO) => Promise<void>;
   update: (id: number, payload: CreateProductDTO) => Promise<void>;
   remove: (id: number) => Promise<void>;
@@ -31,11 +34,19 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   hasNext: false,
   hasPrev: false,
   search: "",
+  sortBy: "",
+  sortOrder: "asc",
 
-  async fetchAll(p = get().page, s = get().size, q = get().search) {
+  async fetchAll(
+    p = get().page,
+    s = get().size,
+    q = get().search,
+    sortBy = get().sortBy,
+    sortOrder = get().sortOrder,
+  ) {
     set({ loading: true, page: p, size: s });
     try {
-      const res = await productsApi.getAll(p, s, q);
+      const res = await productsApi.getAll(p, s, q, sortBy, sortOrder);
       set({
         items: res.data,
         totalCount: res.metadata.totalCount,
@@ -50,9 +61,15 @@ export const useProductStore = create<ProductStore>((set, get) => ({
 
   goToPage: (p) => get().fetchAll(p),
   changeSize: (s) => get().fetchAll(1, s),
+
   searchByName(q) {
     set({ search: q });
     return get().fetchAll(1, get().size, q);
+  },
+
+  setSort(sortBy, sortOrder) {
+    set({ sortBy, sortOrder });
+    return get().fetchAll(1, get().size, get().search, sortBy, sortOrder);
   },
 
   async add(payload) {

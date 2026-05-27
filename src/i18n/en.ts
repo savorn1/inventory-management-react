@@ -105,6 +105,11 @@ export default {
     uploadImage: "Click to upload image",
     changeImage: "Click to change image",
     addImages: "Add images",
+    stock: "Stock",
+    sortByDefault: "Sort by...",
+    sortByCreatedAt: "Date Added",
+    sortAsc: "Ascending",
+    sortDesc: "Descending",
   },
   brand: {
     title: "Brands",

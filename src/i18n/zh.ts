@@ -105,6 +105,11 @@ export default {
     uploadImage: "点击上传图片",
     changeImage: "点击更换图片",
     addImages: "添加图片",
+    stock: "库存",
+    sortByDefault: "排序方式...",
+    sortByCreatedAt: "添加日期",
+    sortAsc: "升序",
+    sortDesc: "降序",
   },
   brand: {
     title: "品牌",

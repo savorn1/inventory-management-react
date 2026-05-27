@@ -262,13 +262,19 @@ export function AppProductCombobox({
                     : "text-slate-700 hover:bg-indigo-50 hover:text-indigo-700"
                 }`}
               >
-                {p.imageUrl && (
-                  <img
-                    src={p.imageUrl}
-                    alt={p.name}
-                    className="w-7 h-7 rounded-md object-cover shrink-0"
-                  />
-                )}
+                {(() => {
+                  const src = p.imageUrl ?? p.imageUrls?.[0];
+                  return src ? (
+                    <img
+                      src={src}
+                      alt={p.name}
+                      className="w-7 h-7 rounded-md object-cover shrink-0"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  ) : null;
+                })()}
                 <span className="flex-1 font-medium truncate">{p.name}</span>
                 {p.brandName && (
                   <span className="text-slate-400 text-xs shrink-0">

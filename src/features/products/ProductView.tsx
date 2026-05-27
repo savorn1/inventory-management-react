@@ -274,6 +274,31 @@ export function ProductView() {
           className="h-9 px-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 flex-1 min-w-0 max-w-xs placeholder:text-slate-400"
           placeholder={t("product.searchPlaceholder")}
         />
+
+        {/* Sort By */}
+        <select
+          value={store.sortBy}
+          onChange={(e) => store.setSort(e.target.value, store.sortOrder)}
+          className="h-9 px-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white text-slate-600 min-w-[130px]"
+        >
+          <option value="">{t("product.sortByDefault")}</option>
+          <option value="name">{t("product.name")}</option>
+          <option value="price">{t("product.price")}</option>
+          <option value="stock">{t("product.stock")}</option>
+          <option value="createdAt">{t("product.sortByCreatedAt")}</option>
+        </select>
+
+        {/* Sort Order */}
+        <select
+          value={store.sortOrder}
+          onChange={(e) => store.setSort(store.sortBy, e.target.value as "asc" | "desc")}
+          disabled={!store.sortBy}
+          className="h-9 px-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white text-slate-600 min-w-[110px] disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <option value="asc">↑ {t("product.sortAsc")}</option>
+          <option value="desc">↓ {t("product.sortDesc")}</option>
+        </select>
+
         {auth.can("PRODUCT_CREATE") && (
           <AppButton onClick={handleOpenAdd} className="ml-auto">
             + {t("product.addTitle")}
@@ -292,14 +317,15 @@ export function ProductView() {
             <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{t("product.category")}</th>
             <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{t("product.brand")}</th>
             <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{t("product.price")}</th>
+            <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{t("product.stock")}</th>
             <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">{t("common.actions")}</th>
           </>
         }
         body={
           store.loading ? (
-            <tr><td colSpan={8} className="text-center text-slate-400 py-12">{t("common.loading")}</td></tr>
+            <tr><td colSpan={9} className="text-center text-slate-400 py-12">{t("common.loading")}</td></tr>
           ) : store.items.length === 0 ? (
-            <tr><td colSpan={8} className="text-center text-slate-400 py-12">{t("product.noData")}</td></tr>
+            <tr><td colSpan={9} className="text-center text-slate-400 py-12">{t("product.noData")}</td></tr>
           ) : (
             store.items.map((item, idx) => {
               const allUrls = item.imageUrls?.length
@@ -354,6 +380,15 @@ export function ProductView() {
                   <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{item.categoryName || "—"}</td>
                   <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{item.brandName || "—"}</td>
                   <td className="px-4 py-3 text-slate-700 font-medium whitespace-nowrap">{formatCurrency(item.price)}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {item.stock != null ? (
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${item.stock === 0 ? "bg-red-100 text-red-600" : item.stock <= 10 ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>
+                        {item.stock}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       {auth.can("PRODUCT_UPDATE") && (
