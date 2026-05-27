@@ -2,6 +2,7 @@ import { Fragment, useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useOrderStore } from "./store";
+import { useSystemSettingsStore } from "@/features/settings/store";
 import { clientsApi } from "@/api/clients.api";
 import { productsApi } from "@/api/products.api";
 import { useToast } from "@/hooks/useToast";
@@ -54,6 +55,9 @@ export function CreateOrderView() {
   const navigate = useNavigate();
   const toast = useToast();
 
+  const sys = useSystemSettingsStore();
+  const allowOverselling = sys.settings?.allowOverselling ?? false;
+
   const [saving, setSaving] = useState(false);
   const [clients, setClients] = useState<ClientDTO[]>([]);
   const [lines, setLines] = useState<LineItem[]>([]);
@@ -74,6 +78,8 @@ export function CreateOrderView() {
   // only fetch clients on mount (products are fetched per-query now)
   useEffect(() => {
     clientsApi.getAll(1, 500).then((res) => setClients(res.data));
+    if (!sys.settings) sys.fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // auto-focus the qty cell of a newly added / updated row
@@ -305,6 +311,7 @@ export function CreateOrderView() {
             onSearch={searchProducts}
             onSelect={addProductLine}
             placeholder={t("order.searchProductPlaceholder")}
+            allowOutOfStock={allowOverselling}
           />
 
           {/* Live summary bar */}

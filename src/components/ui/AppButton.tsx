@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "cancel" | "edit" | "delete";
+type Variant = "primary" | "secondary" | "cancel" | "edit" | "delete";
 type Size = "sm" | "md";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,6 +10,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantCls: Record<Variant, string> = {
   primary: "bg-indigo-600 hover:bg-indigo-700 text-white border-0",
+  secondary: "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200",
   cancel:
     "bg-red-50 hover:bg-red-100 text-red-600 border border-red-200",
   edit: "bg-blue-50 hover:bg-blue-100 text-blue-700 border-0",

@@ -14,6 +14,7 @@ export default {
     users: "អ្នកប្រើប្រាស់",
     roles: "តួនាទី",
     pricing: "តម្លៃ",
+    settings: "ការកំណត់",
   },
   common: {
     add: "បន្ថែម",
@@ -352,5 +353,15 @@ export default {
     isDefault: "កំណត់ជាតួនាទីលំនាំដើម",
     permissions: "សិទ្ធិ",
     permissionsSelected: "បានជ្រើស {{n}} សិទ្ធិ",
+  },
+  settings: {
+    title: "ការកំណត់",
+    subtitle: "កំណត់ចំណូលចិត្តប្រព័ន្ធ។",
+    systemSettings: "ការកំណត់ប្រព័ន្ធ",
+    allowOverselling: "អនុញ្ញាតការលក់លើស",
+    allowOversellingHint: "នៅពេលបើក អាចធ្វើការបញ្ជាទិញបានទោះបីស្តុកមានតម្លៃ 0 ឬអវិជ្ជមានក៏ដោយ (ទម្រង់ back-order)។",
+    sysSaved: "ការកំណត់ប្រព័ន្ធបានរក្សាទុកដោយជោគជ័យ។",
+    sysSaveFailed: "បរាជ័យក្នុងការរក្សាទុកការកំណត់ប្រព័ន្ធ។",
+    noPermission: "អ្នកមិនមានសិទ្ធិក្នុងការផ្លាស់ប្ដូរការកំណត់ទាំងនេះទេ។",
   },
 };

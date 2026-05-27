@@ -15,6 +15,7 @@ export default {
     users: "Users",
     roles: "Roles",
     pricing: "Pricing",
+    settings: "Settings",
   },
   common: {
     add: "Add",
@@ -385,5 +386,16 @@ export default {
     isDefault: "Set as default role",
     permissions: "Permissions",
     permissionsSelected: "{{n}} permission(s) selected",
+  },
+  settings: {
+    title: "Settings",
+    subtitle: "Configure system-wide preferences.",
+    systemSettings: "System Settings",
+    allowOverselling: "Allow Overselling",
+    allowOversellingHint:
+      "When enabled, orders can be placed even when a product has zero or negative stock (back-order mode).",
+    sysSaved: "System settings saved successfully.",
+    sysSaveFailed: "Failed to save system settings.",
+    noPermission: "You don't have permission to change these settings.",
   },
 };

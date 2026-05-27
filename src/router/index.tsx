@@ -20,6 +20,7 @@ import { PricingView } from "@/views/PricingView";
 import { StockMovementView } from "@/features/stock-movements/StockMovementView";
 import { OpenItemView } from "@/features/open-items/OpenItemView";
 import { CreateOpenItemView } from "@/features/open-items/CreateOpenItemView";
+import { SettingsView } from "@/features/settings/SettingsView";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,7 @@ export const router = createBrowserRouter([
       { path: "stock-movements", element: <StockMovementView /> },
       { path: "open-items", element: <OpenItemView /> },
       { path: "open-items/create", element: <CreateOpenItemView /> },
+      { path: "settings", element: <SettingsView /> },
     ],
   },
 ]);

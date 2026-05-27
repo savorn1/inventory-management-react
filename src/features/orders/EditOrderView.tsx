@@ -2,6 +2,7 @@ import { Fragment, useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useOrderStore } from "./store";
+import { useSystemSettingsStore } from "@/features/settings/store";
 import { ordersApi } from "@/api/orders.api";
 import { clientsApi } from "@/api/clients.api";
 import { productsApi } from "@/api/products.api";
@@ -53,6 +54,8 @@ export function EditOrderView() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const store = useOrderStore();
+  const sys = useSystemSettingsStore();
+  const allowOverselling = sys.settings?.allowOverselling ?? false;
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -75,7 +78,12 @@ export function EditOrderView() {
   const qtyRefs = useRef<(HTMLInputElement | null)[]>([]);
   const pendingFocusIdx = useRef<number | null>(null);
 
-  // Load clients and existing order in parallel
+  // Load clients and existing order in parallel; also ensure system settings are loaded
+  useEffect(() => {
+    if (!sys.settings) sys.fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const orderId = Number(id);
     if (!orderId) return;
@@ -357,6 +365,7 @@ export function EditOrderView() {
             onSearch={searchProducts}
             onSelect={addProductLine}
             placeholder={t("order.searchProductPlaceholder")}
+            allowOutOfStock={allowOverselling}
           />
 
           {/* Live summary bar */}

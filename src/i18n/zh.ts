@@ -15,6 +15,7 @@ export default {
     users: "用户",
     roles: "角色",
     pricing: "定价",
+    settings: "设置",
   },
   common: {
     add: "添加",
@@ -385,5 +386,15 @@ export default {
     isDefault: "设为默认角色",
     permissions: "权限",
     permissionsSelected: "已选 {{n}} 个权限",
+  },
+  settings: {
+    title: "设置",
+    subtitle: "配置系统级偏好。",
+    systemSettings: "系统设置",
+    allowOverselling: "允许超售",
+    allowOversellingHint: "开启后，即使库存为零或负数也可以下单（预订模式）。",
+    sysSaved: "系统设置保存成功。",
+    sysSaveFailed: "保存系统设置失败。",
+    noPermission: "您没有权限修改这些设置。",
   },
 };

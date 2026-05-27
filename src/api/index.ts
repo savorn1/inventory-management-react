@@ -14,3 +14,4 @@ export * from "./chat.api";
 export * from "./dashboard.api";
 export * from "./stock-movements.api";
 export * from "./open-items.api";
+export * from "./settings.api";
